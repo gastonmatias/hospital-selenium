@@ -5,13 +5,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-//import static org.junit.Assert.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-//import java.util.List;
-//import org.openqa.selenium.WebElement;
 
 public class PacienteTest {
 	
@@ -19,7 +16,7 @@ public class PacienteTest {
 	private WebDriver driver;
 	
 	/*LOCALIZADORES*/
-	// para Login
+	//  Login
 	By userLocator = By.name("username");
 	By passLocator = By.name("password");
 	By signInLocator = By.name("submit");
@@ -66,16 +63,15 @@ public class PacienteTest {
 		
 	}
 	
-
+	// metodo para Iniciar sesion como medico 
 	public void signIn() throws InterruptedException {
 		// 1) confirmación de qe "se está" en la pagina de login, de ser asi
 	   // entonces iniciar sesion con las crendenciales dispuestas
 		if (driver.findElement(userLocator).isDisplayed()){
-			driver.findElement(userLocator).sendKeys("simi");
+			driver.findElement(userLocator).sendKeys("house");
 			driver.findElement(passLocator).sendKeys("django123");
+			Thread.sleep(2000); //agregar throws o try-catch
 			driver.findElement(signInLocator).click();
-			
-			//Thread.sleep(1000); //agregar throws o try-catch
 			
 			//Si el inicio de sesion es correcto, comparar con "homePageLocator"
 			//qe es la variable que contiene la "bienvenida" de la pagina
@@ -86,17 +82,17 @@ public class PacienteTest {
 		
 	}
 	
-	
+	// metodo para ingresar a pestaña "paciente" y ver lista de pacientes registrados
 	public void listarPaciente() throws InterruptedException{
 		signIn();
 		//dar click en pestaña "paciente" desde home
+		Thread.sleep(2000);
 		driver.findElement(pacienteLinkLocator).click();
-		//Thread.sleep(1000);
 		
 		assertTrue(driver.findElement(listaTableLocator).isDisplayed());
 	}
 
-	
+	// metodo qe prueba boton actualizar de un registro de paciente
 	public void actualizarPaciente()throws InterruptedException{
 		listarPaciente();
 		driver.findElement(modificarBtnLocator).click();
@@ -106,14 +102,20 @@ public class PacienteTest {
 
 	}
 	
+	// TEST REGISTRAR PACIENTE
 	@Test
 	public void registrarPaciente() throws InterruptedException{
+		//evocacion metodo listar_paciente()
 		listarPaciente();
-		//Thread.sleep(1000);
+		// milisegundos de espera
+		Thread.sleep(2000);
+		//click boton agregar nuevo paciente
 		driver.findElement(agregarLinkLocator).click();
 		
+		// creacion objeto js qe ayudara a "scroll down" en la pagina web
 		 JavascriptExecutor js = (JavascriptExecutor) driver;
 		
+		 // se determina si el form registro es desplegado
 		if (driver.findElement(registroFormLocator).isDisplayed()) {
 			//relleno de formulario registro paciente
 			driver.findElement(nameLocator).sendKeys("Francisco");
@@ -131,19 +133,20 @@ public class PacienteTest {
 			// This  will scroll down the page by  1000 pixel vertical		
 	        js.executeScript("window.scrollBy(0,1000)");
 			
-			//click registrar
-			driver.findElement(registrarBtnLocator).submit();
+	        Thread.sleep(3000);
+	        // click registrar luego de haber rellenado el form
+	        driver.findElement(registrarBtnLocator).submit();
 			
 			// VERIFICAR aparicion cuadro de dialogo "Paciente Registrado"
 			assertTrue(driver.findElement(avisoOkLocator).isDisplayed());
 			
 			// Click "ok" cuadro de dialogo
+			Thread.sleep(3000);
 			driver.findElement(avisoOkLocator).click();
 		}
 		else {
 			System.out.println("error  was not found");
 		}
-		//Thread.sleep(1000);
 		 js.executeScript("window.scrollBy(0,1000)");
 		
 		
